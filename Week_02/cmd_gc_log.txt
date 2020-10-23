@@ -1,0 +1,16 @@
+java -XX:+UseSerialGC -Xms64m -Xmx64m -Xloggc:SerialGC_64m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis   
+java -XX:+UseSerialGC -Xms128m -Xmx128m -Xloggc:SerialGC_128m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+java -XX:+UseSerialGC -Xms512m -Xmx512m -Xloggc:SerialGC_512m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+java -XX:+UseSerialGC -Xms1024m -Xmx1024m -Xloggc:SerialGC_1024m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+java -XX:+UseSerialGC -Xms2048m -Xmx2048m -Xloggc:SerialGC_2048m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+
+java -XX:+UseConcMarkSweepGC -Xms128m -Xmx128m -Xloggc:CMSGC_128m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis   
+java -XX:+UseConcMarkSweepGC -Xms512m -Xmx512m -Xloggc:CMSGC_512m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
+java -XX:+UseConcMarkSweepGC -Xms1024m -Xmx1024m -Xloggc:CMSGC_1024m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
+java -XX:+UseConcMarkSweepGC -Xms2048m -Xmx2048m -Xloggc:CMSGC_2048m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
+
+
+java -XX:+UseG1GC -Xms128m -Xmx128m -Xloggc:G1GC_128m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis   
+java -XX:+UseG1GC -Xms512m -Xmx512m -Xloggc:G1GC_512m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
+java -XX:+UseG1GC -Xms1024m -Xmx1024m -Xloggc:G1_1024m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
+java -XX:+UseG1GC -Xms2048m -Xmx2048m -Xloggc:G1_2048m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis

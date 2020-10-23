@@ -1,0 +1,48 @@
+Java HotSpot(TM) 64-Bit Server VM (25.161-b12) for windows-amd64 JRE (1.8.0_161-b12), built on Dec 19 2017 17:52:25 by "java_re" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 8089996k(2390232k free), swap 16178132k(9638348k free)
+CommandLine flags: -XX:InitialHeapSize=129439936 -XX:MaxHeapSize=2071038976 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:-UseLargePagesIndividualAllocation -XX:+UseParallelGC 
+2020-10-23T10:15:08.226+0800: 0.431: [GC (Allocation Failure) [PSYoungGen: 31550K->5112K(36864K)] 31550K->11476K(121856K), 0.0278294 secs] [Times: user=0.03 sys=0.02, real=0.03 secs] 
+2020-10-23T10:15:08.297+0800: 0.484: [GC (Allocation Failure) [PSYoungGen: 36763K->5107K(68608K)] 43127K->19924K(153600K), 0.0110724 secs] [Times: user=0.02 sys=0.03, real=0.01 secs] 
+2020-10-23T10:15:08.364+0800: 0.551: [GC (Allocation Failure) [PSYoungGen: 68536K->5109K(68608K)] 83353K->43386K(153600K), 0.0201060 secs] [Times: user=0.02 sys=0.03, real=0.02 secs] 
+2020-10-23T10:15:08.413+0800: 0.601: [GC (Allocation Failure) [PSYoungGen: 68597K->5109K(132096K)] 106874K->62780K(217088K), 0.0179706 secs] [Times: user=0.01 sys=0.03, real=0.02 secs] 
+2020-10-23T10:15:08.533+0800: 0.721: [GC (Allocation Failure) [PSYoungGen: 132085K->5116K(132096K)] 189756K->100415K(227840K), 0.0701033 secs] [Times: user=0.03 sys=0.14, real=0.07 secs] 
+2020-10-23T10:15:08.604+0800: 0.791: [Full GC (Ergonomics) [PSYoungGen: 5116K->0K(132096K)] [ParOldGen: 95298K->90831K(167424K)] 100415K->90831K(299520K), [Metaspace: 2820K->2820K(1056768K)], 0.0340692 secs] [Times: user=0.05 sys=0.00, real=0.03 secs] 
+2020-10-23T10:15:08.697+0800: 0.885: [GC (Allocation Failure) [PSYoungGen: 126872K->44696K(284160K)] 217703K->135528K(451584K), 0.0719872 secs] [Times: user=0.05 sys=0.14, real=0.07 secs] 
+2020-10-23T10:15:08.995+0800: 1.183: [GC (Allocation Failure) [PSYoungGen: 283288K->53752K(292352K)] 374120K->203712K(459776K), 0.1747131 secs] [Times: user=0.03 sys=0.33, real=0.18 secs] 
+2020-10-23T10:15:09.170+0800: 1.358: [Full GC (Ergonomics) [PSYoungGen: 53752K->9679K(292352K)] [ParOldGen: 149960K->166852K(266240K)] 203712K->176532K(558592K), [Metaspace: 2820K->2820K(1056768K)], 0.0694121 secs] [Times: user=0.19 sys=0.06, real=0.07 secs] 
+Heap
+ PSYoungGen      total 292352K, used 19551K [0x00000000d6d80000, 0x00000000fdb80000, 0x0000000100000000)
+  eden space 238592K, 4% used [0x00000000d6d80000,0x00000000d7723ea8,0x00000000e5680000)
+  from space 53760K, 18% used [0x00000000e5680000,0x00000000e5ff3dd8,0x00000000e8b00000)
+  to   space 93184K, 0% used [0x00000000f8080000,0x00000000f8080000,0x00000000fdb80000)
+ ParOldGen       total 266240K, used 166852K [0x0000000084800000, 0x0000000094c00000, 0x00000000d6d80000)
+  object space 266240K, 62% used [0x0000000084800000,0x000000008eaf1308,0x0000000094c00000)
+ Metaspace       used 2826K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 306K, capacity 386K, committed 512K, reserved 1048576K
+  
+  
+  
+  
+  
+------------------------------------------------------------------
+
+分析    InitialHeapSize=129439936 = 123.44M  ;  MaxHeapSize=2071038976=1.9G(系统可使用的 84.6%)  -XX:+UseParallelGC  默认使用的是并行GC
+ Yong区GC     GC前 —> GC后(Yong区总大小)  GC前Java堆使用—>GC前Java堆使用(Java堆总容量) GC耗时
+ [PSYoungGen: 31550K->5112K(36864K)]       31550K->11476K(121856K),   0.0278294 secs] [Times: user=0.03 sys=0.02, real=0.03 secs] 
+ [PSYoungGen: 36763K->5107K(68608K)]       43127K->19924K(153600K),   0.0110724 secs]
+ [PSYoungGen: 68536K->5109K(68608K)] 	   83353K->43386K(153600K),   0.0201060 secs]
+ [PSYoungGen: 68597K->5109K(132096K)]      106874K->62780K(217088K),  0.0179706 secs]
+ [PSYoungGen: 132085K->5116K(132096K)]     189756K->100415K(227840K), 0.0701033 secs]
+ 5次PSYongGC  Yong区总容量在扩大
+  Full GC                                                                                                                 
+ [PSYoungGen: 5116K->0K(132096K)] [ParOldGen: 95298K->90831K(167424K)] 100415K->90831K(299520K), [Metaspace: 2820K->2820K(1056768K)], 0.0340692 secs]
+ full GC YONG区被清空5116，(129m)       Old区 减少 4467k (163.5m)       整个堆减少9584=5116+4467  总的元空间不变
+ 
+                                        90831+126872->44696+90831
+ [PSYoungGen: 126872K->44696K(284160K)] 217703K->135528K(451584K), 0.0719872 secs] 
+ [PSYoungGen: 283288K->53752K(292352K)] 374120K->203712K(459776K), 0.1747131 secs]
+ 
+ [PSYoungGen: 53752K->9679K(292352K)] [ParOldGen: 149960K->166852K(266240K)] 203712K->176532K(558592K), [Metaspace: 2820K->2820K(1056768K)]
+
+
+

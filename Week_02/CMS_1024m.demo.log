@@ -1,0 +1,14 @@
+Java HotSpot(TM) 64-Bit Server VM (25.161-b12) for windows-amd64 JRE (1.8.0_161-b12), built on Dec 19 2017 17:52:25 by "java_re" with MS VC++ 10.0 (VS2010)
+Memory: 4k page, physical 8089996k(1835220k free), swap 16178132k(8683500k free)
+CommandLine flags: -XX:InitialHeapSize=1073741824 -XX:MaxHeapSize=1073741824 -XX:MaxNewSize=348966912 -XX:MaxTenuringThreshold=6 -XX:NewSize=348966912 -XX:OldPLABSize=16 -XX:OldSize=697933824 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:-UseLargePagesIndividualAllocation -XX:+UseParNewGC 
+2020-10-23T11:44:35.633+0800: 0.715: [GC (Allocation Failure) 2020-10-23T11:44:35.633+0800: 0.715: [ParNew: 272640K->34047K(306688K), 0.0564922 secs] 272640K->82535K(1014528K), 0.0569238 secs] [Times: user=0.13 sys=0.11, real=0.06 secs] 
+2020-10-23T11:44:35.822+0800: 0.905: [GC (Allocation Failure) 2020-10-23T11:44:35.822+0800: 0.905: [ParNew: 306687K->34048K(306688K), 0.0819035 secs] 355175K->162595K(1014528K), 0.0821057 secs] [Times: user=0.12 sys=0.19, real=0.08 secs] 
+2020-10-23T11:44:36.058+0800: 1.141: [GC (Allocation Failure) 2020-10-23T11:44:36.058+0800: 1.141: [ParNew: 306688K->34048K(306688K), 0.1569708 secs] 435235K->243463K(1014528K), 0.1571371 secs] [Times: user=0.45 sys=0.06, real=0.16 secs] 
+Heap
+ par new generation   total 306688K, used 133416K [0x00000000c0000000, 0x00000000d4cc0000, 0x00000000d4cc0000)
+  eden space 272640K,  36% used [0x00000000c0000000, 0x00000000c610a3f0, 0x00000000d0a40000)
+  from space 34048K, 100% used [0x00000000d2b80000, 0x00000000d4cc0000, 0x00000000d4cc0000)
+  to   space 34048K,   0% used [0x00000000d0a40000, 0x00000000d0a40000, 0x00000000d2b80000)
+ concurrent mark-sweep generation total 707840K, used 209415K [0x00000000d4cc0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 2827K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 306K, capacity 386K, committed 512K, reserved 1048576K
