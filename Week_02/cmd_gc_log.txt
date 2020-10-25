@@ -5,9 +5,11 @@ java -XX:+UseSerialGC -Xms2g -Xmx2g -Xloggc:SerialGC_2g.demo.log -XX:+PrintGCDet
 
 
 java -XX:+UseParallelGC -Xms512m -Xmx512m -Xloggc:Paralle_512m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
-java -XX:+UseParallelGC -Xms512m -Xmx512m -Xloggc:Paralle_512m_16t.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:ParallelGCThreads=16 GCLogAnalysis
 java -XX:+UseParallelGC -Xms1g -Xmx1g -Xloggc:Paralle_1g.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+java -XX:+UseParallelGC -Xms1g -Xmx1g -Xloggc:Paralle_1g.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:ParallelGCThreads=20 GCLogAnalysis
 java -XX:+UseParallelGC -Xms2g -Xmx2g -Xloggc:Paralle_2g.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+java -XX:+UseParallelGC -Xms4g -Xmx4g -Xloggc:Paralle_4g.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis
+
 
 java -XX:+UseConcMarkSweepGC -Xms128m -Xmx128m -Xloggc:CMSGC_128m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis   
 java -XX:+UseConcMarkSweepGC -Xms512m -Xmx512m -Xloggc:CMSGC_512m.demo.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps GCLogAnalysis 
