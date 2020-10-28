@@ -18,6 +18,8 @@ Serial GC，Parallel GC，CMS，G1总结
 
 ![1603786722938](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1603786722938.png)
 
+**备注：吞吐量是以首次开始GC时刻到最后一次GC时刻的时段位采样时间。**
+
 单独分析Serial GC可以得出
 
 ![1603785737841](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1603785737841.png)
