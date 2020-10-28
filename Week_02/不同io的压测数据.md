@@ -159,4 +159,28 @@ Avg: 23.5ms
    99.9%   below 95ms
    ```
 
+   tomcat 线程池
+
+   ```
+   Finished at 2020/10/28 9:38:28 (took 00:01:09.6519839)
+   Status 200:    41690
    
+   RPS: 682.1 (requests/second)
+   Max: 1290ms
+   Min: 1ms
+   Avg: 15.1ms
+   
+     50%   below 12ms
+     60%   below 14ms
+     70%   below 16ms
+     80%   below 19ms
+     90%   below 26ms
+     95%   below 33ms
+     98%   below 45ms
+     99%   below 59ms
+   99.9%   below 140ms
+   ```
+
+   
+
+​       
