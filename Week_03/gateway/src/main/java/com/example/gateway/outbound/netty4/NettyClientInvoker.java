@@ -1,33 +1,68 @@
 package com.example.gateway.outbound.netty4;//package io.github.kimmking.com.example.gateway.outbound;
 
+import com.example.gateway.outbound.Invoker;
+import com.example.gateway.outbound.httpclient4.NamedThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class NettyHttpClient {
+import java.net.URI;
+import java.util.concurrent.*;
 
-    private FullHttpRequest request;
+@Slf4j
+public class NettyClientInvoker implements Invoker {
+
+
+
+    private NettyHttpClientOutboundHandler outboundHandler;
+
+    private ExecutorService proxyService;
 
     private ChannelHandlerContext serverCxt;
 
-    public void setRequest(FullHttpRequest request) {
-        this.request = request;
+    public NettyClientInvoker() {
+        this.outboundHandler = new NettyHttpClientOutboundHandler();
+        int cores = Runtime.getRuntime().availableProcessors() * 2;
+        long keepAliveTime = 1000;
+        int queueSize = 2048;
+        RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();//.DiscardPolicy();
+        proxyService = new ThreadPoolExecutor(cores, cores,
+                keepAliveTime, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(queueSize),
+                new NamedThreadFactory("proxyService"), handler);
     }
 
+    @Override
+    public FullHttpResponse invoke(FullHttpRequest fullRequest, ChannelHandlerContext ctx) throws Exception {
+        ReferenceCountUtil.retain(fullRequest);
+        URI uri = new URI(fullRequest.uri());
+        outboundHandler.setFullRequest(fullRequest);
+        outboundHandler.setServerCtx(ctx);
+        proxyService.execute(()-> {
+            try {
+                connect(uri.getHost(), uri.getPort());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return null;
+    }
 
     public void setServerCxt(ChannelHandlerContext serverCxt) {
         this.serverCxt = serverCxt;
     }
 
+
+
     public void connect(String host, int port) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
+        Bootstrap b =null;
         try {
-            Bootstrap b = new Bootstrap();
+            b = new Bootstrap();
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
             b.option(ChannelOption.SO_KEEPALIVE, true);
@@ -39,25 +74,18 @@ public class NettyHttpClient {
                             .addLast(new HttpRequestEncoder()) // 客户端发送的是httpRequest，所以要使用HttpRequestEncoder进行编码
                             .addLast(new HttpObjectAggregator(1024 * 10 * 1024));
 
-                    NettyHttpClientOutboundHandler clientOutboundHandler  =  new NettyHttpClientOutboundHandler();
-                    clientOutboundHandler.setFullRequest(request);
-                    clientOutboundHandler.setServerCtx(serverCxt);
-                    ch.pipeline().addLast(clientOutboundHandler);
+                    ch.pipeline().addLast(outboundHandler);
+
                 }
             });
-
             // Start the client.
             ChannelFuture f = b.connect(host, port).sync();
-            f.channel().write(request);
-            f.channel().flush();
-
             f.channel().closeFuture().sync();
-
-
         } finally {
             workerGroup.shutdownGracefully().sync();
             log.info("NettyHttpClient shutdownGracefully");
         }
 
     }
+
 }

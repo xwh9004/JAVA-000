@@ -2,6 +2,7 @@ package com.example.gateway.outbound.netty4;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
@@ -10,12 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import static io.netty.handler.codec.rtsp.RtspResponseStatuses.OK;
-
+@ChannelHandler.Sharable
 @Slf4j
 public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapter {
 
     private FullHttpRequest fullRequest;
-
 
     private ChannelHandlerContext serverCtx;
 
@@ -30,8 +30,17 @@ public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapte
 
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        ctx.channel().writeAndFlush(fullRequest);
+    }
+
+
+
+    @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-       ctx.channel().close();
+        log.info("NettyHttpClientOutboundHandler channelReadComplete "+ctx.toString());
+        ctx.channel().close();
     }
 
     @Override
@@ -64,8 +73,6 @@ public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapte
             response.headers().add(headerOri);
             response.headers().set("Content-Type", "application/json");
             response.headers().setInt("Content-Length", length);
-
-
 
         } catch (Exception e) {
             e.printStackTrace();

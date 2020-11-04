@@ -1,4 +1,4 @@
 package com.example.gateway.outbound.okhttp;
 
-public class OkhttpOutboundHandler {
+public class OkHttpOutboundHandler {
 }

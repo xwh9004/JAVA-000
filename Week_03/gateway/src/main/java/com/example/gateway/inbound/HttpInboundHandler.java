@@ -2,32 +2,37 @@ package com.example.gateway.inbound;
 
 import com.example.gateway.filter.HttpRequestFilter;
 import com.example.gateway.filter.HttpRequestTraceFilter;
-import com.example.gateway.outbound.httpclient4.HttpOutboundHandler;
-import com.example.gateway.outbound.netty4.NettyHttpClient;
+import com.example.gateway.outbound.Invoker;
+import com.example.gateway.outbound.netty4.NettyClientInvoker;
 import com.example.gateway.router.RandomHttpEndpointRouter;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 @Slf4j
 public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
 
-    private HttpOutboundHandler handler;
-
-    private NettyHttpClient client;
+    private Invoker invoker = new NettyClientInvoker();
 
     private List<HttpRequestFilter> filters = new ArrayList<HttpRequestFilter>();
-    
-    public HttpInboundHandler() {
 
-        handler = new HttpOutboundHandler();
-        client = new NettyHttpClient();
+    public void setInvoker(Invoker invoker) {
+        this.invoker = invoker;
+    }
+
+    public HttpInboundHandler() {
         filters.add(new HttpRequestTraceFilter());
     }
 
@@ -57,13 +62,12 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
             final FullHttpRequest fullRequest = (FullHttpRequest) msg;
             String url = fullRequest.uri();
             if(url.startsWith("/api")){
-                //filter process
                 filters.stream().forEach(filter -> filter.filter(fullRequest,ctx));
                 RandomHttpEndpointRouter router = new RandomHttpEndpointRouter();
                 String backendUri =router.route(url);
-//                httpClientHandler(backendUri,fullRequest,ctx);
-                nettyClientHandler(backendUri,fullRequest,ctx);
-
+                fullRequest.setUri(backendUri);
+                FullHttpResponse response =invoker.invoke(fullRequest, ctx);
+//                handleResponse(fullRequest,ctx,response);
             }
     
         } catch(Exception e) {
@@ -73,28 +77,34 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
-    private void httpClientHandler(String uri,FullHttpRequest fullRequest,ChannelHandlerContext ctx){
-        handler.setBackendUrl(uri);
-        handler.handle(fullRequest, ctx);
-        log.info("httpClientHandler done!");
-    }
-
-    private void nettyClientHandler(String uriStr,FullHttpRequest fullRequest,ChannelHandlerContext ctx) throws Exception{
-        fullRequest =ReferenceCountUtil.retain(fullRequest);
-        URI uri = new URI(uriStr);
-        fullRequest.setUri(uriStr);
-        client.setRequest(fullRequest);
-        client.setServerCxt(ctx);
-        client.connect(uri.getHost(),uri.getPort());
-        log.info("nettyClientHandler done!");
-    }
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
 
+
+    private void handleResponse(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, final FullHttpResponse response) throws Exception {
+
+        try {
+            response.headers().set("Content-Type", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            FullHttpResponse defaultResponse = new DefaultFullHttpResponse(HTTP_1_1, NO_CONTENT);
+            exceptionCaught(ctx, e);
+        } finally {
+            if (fullRequest != null) {
+                if (!HttpUtil.isKeepAlive(fullRequest)) {
+                    ctx.write(response).addListener(ChannelFutureListener.CLOSE);
+                } else {
+                    //response.headers().set(CONNECTION, KEEP_ALIVE);
+                    ctx.write(response);
+                }
+            }
+            ctx.flush();
+            //ctx.close();
+        }
+
+    }
 
 }

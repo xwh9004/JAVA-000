@@ -23,8 +23,8 @@ public class RandomHttpEndpointRouter implements HttpEndpointRouter{
         List<String> helloServiceRouters = new ArrayList<>();
 
         helloServiceRouters.add("http://localhost:8801/");
-        helloServiceRouters.add("http://localhost:8802/");
-        helloServiceRouters.add("http://localhost:8803/");
+//        helloServiceRouters.add("http://localhost:8802/");
+//        helloServiceRouters.add("http://localhost:8803/");
 
         routerMap.put("/hello",helloServiceRouters);
     }
@@ -45,7 +45,7 @@ public class RandomHttpEndpointRouter implements HttpEndpointRouter{
         String serviceName = getServiceName(endpoints);
         List<String> backendRouters =routerMap.get(serviceName);
         Random rand =new Random();
-        return backendRouters.get(rand.nextInt(3));
+        return backendRouters.get(rand.nextInt(backendRouters.size()));
     }
 
     private String getServiceName(String endpoints) {
