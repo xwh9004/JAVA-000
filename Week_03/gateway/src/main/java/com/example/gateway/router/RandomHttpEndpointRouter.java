@@ -23,8 +23,8 @@ public class RandomHttpEndpointRouter implements HttpEndpointRouter{
         List<String> helloServiceRouters = new ArrayList<>();
 
         helloServiceRouters.add("http://localhost:8801/");
-//        helloServiceRouters.add("http://localhost:8802/");
-//        helloServiceRouters.add("http://localhost:8803/");
+        helloServiceRouters.add("http://localhost:8802/");
+        helloServiceRouters.add("http://localhost:8803/");
 
         routerMap.put("/hello",helloServiceRouters);
     }
