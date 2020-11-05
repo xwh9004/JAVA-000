@@ -12,20 +12,24 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Slf4j
 public class NettyClientInvoker implements Invoker {
 
+    private  EventLoopGroup workerGroup;
 
+    private Bootstrap b = null;
+
+    private Map<String,ChannelFuture> channelMap = new ConcurrentHashMap<String,ChannelFuture>();
 
     private NettyHttpClientOutboundHandler outboundHandler;
 
     private ExecutorService proxyService;
 
-    private ChannelHandlerContext serverCxt;
-
     public NettyClientInvoker() {
+        init();
         this.outboundHandler = new NettyHttpClientOutboundHandler();
         int cores = Runtime.getRuntime().availableProcessors() * 2;
         long keepAliveTime = 1000;
@@ -42,9 +46,10 @@ public class NettyClientInvoker implements Invoker {
         URI uri = new URI(fullRequest.uri());
         outboundHandler.setFullRequest(fullRequest);
         outboundHandler.setServerCtx(ctx);
-        proxyService.execute(()-> {
+        proxyService.execute(() -> {
             try {
-                connect(uri.getHost(), uri.getPort());
+                ChannelFuture  f =connect(uri.getHost(), uri.getPort());
+                f.channel().writeAndFlush(fullRequest);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -52,39 +57,45 @@ public class NettyClientInvoker implements Invoker {
         return null;
     }
 
-    public void setServerCxt(ChannelHandlerContext serverCxt) {
-        this.serverCxt = serverCxt;
+    public void init() {
+        workerGroup = new NioEventLoopGroup();
+        b = new Bootstrap();
+        b.group(workerGroup);
+        b.channel(NioSocketChannel.class);
+        b.option(ChannelOption.SO_KEEPALIVE, true);
+        b.handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline()
+                        .addLast(new HttpResponseDecoder())   // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
+                        .addLast(new HttpRequestEncoder()) // 客户端发送的是httpRequest，所以要使用HttpRequestEncoder进行编码
+                        .addLast(new HttpObjectAggregator(1024 * 10 * 1024));
+
+                ch.pipeline().addLast(outboundHandler);
+
+            }
+        });
     }
 
-
-
-    public void connect(String host, int port) throws Exception {
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        Bootstrap b =null;
+    public void close(ChannelFuture f) throws InterruptedException {
         try {
-            b = new Bootstrap();
-            b.group(workerGroup);
-            b.channel(NioSocketChannel.class);
-            b.option(ChannelOption.SO_KEEPALIVE, true);
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline()
-                            .addLast(new HttpResponseDecoder())   // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
-                            .addLast(new HttpRequestEncoder()) // 客户端发送的是httpRequest，所以要使用HttpRequestEncoder进行编码
-                            .addLast(new HttpObjectAggregator(1024 * 10 * 1024));
-
-                    ch.pipeline().addLast(outboundHandler);
-
-                }
-            });
-            // Start the client.
-            ChannelFuture f = b.connect(host, port).sync();
+            f.channel().close();
             f.channel().closeFuture().sync();
-        } finally {
+        }finally {
             workerGroup.shutdownGracefully().sync();
             log.info("NettyHttpClient shutdownGracefully");
         }
+    }
+
+    public ChannelFuture connect(String host, int port) throws Exception {
+        // Start the client.
+        String remoteHost = host+":"+port;
+        ChannelFuture channelFuture= channelMap.get(remoteHost);
+        if(channelFuture==null){
+            channelFuture = b.connect(host,port).sync();
+            channelMap.put(remoteHost,channelFuture);
+        }
+        return channelFuture;
 
     }
 

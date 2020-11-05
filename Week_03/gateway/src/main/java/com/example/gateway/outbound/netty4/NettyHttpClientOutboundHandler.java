@@ -31,8 +31,9 @@ public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapte
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        log.info("NettyHttpClient channelActive");
         super.channelActive(ctx);
-        ctx.channel().writeAndFlush(fullRequest);
+//        ctx.channel().writeAndFlush(fullRequest);
     }
 
 
@@ -40,7 +41,8 @@ public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapte
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         log.info("NettyHttpClientOutboundHandler channelReadComplete "+ctx.toString());
-        ctx.channel().close();
+        super.channelReadComplete(ctx);
+//        ctx.channel().close();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class NettyHttpClientOutboundHandler  extends ChannelInboundHandlerAdapte
             int length =endpointResponse.content().readableBytes();
             byte[] body =new byte[length];
             endpointResponse.content().readBytes(body);
-            log.info("endpointResponse ={}",new String(body));
+//            log.info("endpointResponse ={}",new String(body));
             response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(body));
             HttpHeaders headerOri = endpointResponse.headers();
             response.headers().add(headerOri);
