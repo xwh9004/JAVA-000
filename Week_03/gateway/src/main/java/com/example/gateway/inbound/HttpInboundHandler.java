@@ -3,6 +3,7 @@ package com.example.gateway.inbound;
 import com.example.gateway.filter.HttpRequestFilter;
 import com.example.gateway.filter.HttpRequestTraceFilter;
 import com.example.gateway.outbound.Invoker;
+import com.example.gateway.outbound.httpclient4.HttpClientInvoker;
 import com.example.gateway.outbound.netty4.NettyClientInvoker;
 import com.example.gateway.router.RandomHttpEndpointRouter;
 import io.netty.channel.ChannelFutureListener;

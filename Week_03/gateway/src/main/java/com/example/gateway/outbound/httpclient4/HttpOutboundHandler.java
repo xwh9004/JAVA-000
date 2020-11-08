@@ -1,6 +1,4 @@
 package com.example.gateway.outbound.httpclient4;
-
-
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,6 +21,8 @@ import java.util.concurrent.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+
+
 @Slf4j
 public class HttpOutboundHandler {
 
