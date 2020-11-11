@@ -5,6 +5,7 @@ import com.example.gateway.filter.HttpRequestTraceFilter;
 import com.example.gateway.outbound.Invoker;
 import com.example.gateway.outbound.httpclient4.HttpClientInvoker;
 import com.example.gateway.outbound.netty4.NettyClientInvoker;
+import com.example.gateway.outbound.okhttp.OkHttpClientInvoker;
 import com.example.gateway.router.RandomHttpEndpointRouter;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +26,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Slf4j
 public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
 
-    private Invoker invoker = new NettyClientInvoker();
+    private Invoker invoker = new OkHttpClientInvoker();
 
     private List<HttpRequestFilter> filters = new ArrayList<HttpRequestFilter>();
 

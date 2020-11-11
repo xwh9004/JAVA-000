@@ -8,13 +8,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
 
 public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
-	
-	private String proxyServer;
-	
-	public HttpInboundInitializer(String proxyServer) {
-		this.proxyServer = proxyServer;
-	}
-	
+
 	@Override
 	public void initChannel(SocketChannel ch) {
 		ChannelPipeline p = ch.pipeline();
