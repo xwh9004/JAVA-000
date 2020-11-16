@@ -1,0 +1,2 @@
+http\://localhost/schema/student=com.example.spring.xml.StudentNameSpaceHandler
+http\://localhost/schema/school=com.example.spring.xml.SchoolNameSpaceHandler

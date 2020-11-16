@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://localhost/schema/student"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://localhost/schema/student">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+
+
+    <xsd:element name="student">
+        <xsd:complexType>
+            <xsd:attribute name="id" type="xsd:int" use="required"></xsd:attribute>
+            <xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
