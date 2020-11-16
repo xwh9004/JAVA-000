@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+
+    <bean id="student1" class="com.example.spring.bean.Student" init-method="init"></bean>
+
+    <bean id="student2" class="com.example.spring.bean.Student" init-method="init"></bean>
+
+    <bean id="klass" class="com.example.spring.bean.Klass">
+        <property name="students">
+            <list>
+                <ref bean="student1"></ref>
+                <ref bean="student2"></ref>
+            </list>
+        </property>
+        <property name="klassName">
+            <value>高二(1)班</value>
+        </property>
+    </bean>
+
+</beans>
