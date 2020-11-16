@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @version V0.1
  * @classNmae AutoScanApplication
  */
+
 @Configuration
 @ComponentScan(basePackages = {"com.example.spring.autoScan","com.example.spring.bean"})
 public class AutoScanApplication {
