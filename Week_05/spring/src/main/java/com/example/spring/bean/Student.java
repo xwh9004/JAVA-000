@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
+@Component
 public class Student implements Serializable {
 
     

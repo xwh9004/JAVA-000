@@ -3,6 +3,7 @@ package com.example.spring.bean;
 
 import com.example.spring.interfaces.ISchool;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,10 +19,10 @@ import org.springframework.stereotype.Component;
 @Data
 public class HighSchool implements ISchool {
 
-
+    @Autowired
     private Klass class1;
 
-
+    @Autowired
     private Student student100;
 
     @Override
