@@ -1,4 +1,4 @@
-package com.example.springboot;
+package com.example.springboot.test;
 
 import com.example.autoconfig.bean.ISchool;
 import org.springframework.boot.SpringApplication;
@@ -20,8 +20,6 @@ public class SpringBootApplication {
 
     public static void main(String[] args) {
         autoConfigSchool();
-
-
     }
 
 
