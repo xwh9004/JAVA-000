@@ -2,6 +2,7 @@ package com.example.springboot;
 
 import com.example.autoconfig.bean.ISchool;
 import com.example.autoconfig.config.SchoolConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+
+import javax.sql.DataSource;
 
 /**
  * <p><b>Description:</b>
@@ -19,10 +22,12 @@ import org.springframework.context.annotation.PropertySource;
  * @version V0.1
  * @classNmae SpringBootApplication
  */
-@PropertySource("/META-INF/application.properties")
+@PropertySource("/application.yml")
 @EnableConfigurationProperties
 @SpringBootApplication(exclude = SchoolConfiguration.class)   //将schoolautoConfig包中的自动装配配排除
 public class SpringBootStarterApplication {
+
+
 
 
     public static void main(String[] args) {
