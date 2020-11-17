@@ -19,15 +19,4 @@ import org.springframework.context.annotation.ImportResource;
 @Configuration
 public class SchoolConfiguration {
 
-
-
-
-
-    public static void main(String[] args) {
-        AnnotationConfigApplicationContext applicationContext
-                = new AnnotationConfigApplicationContext(SchoolConfiguration.class);
-
-        ISchool school=   (ISchool)applicationContext.getBean("school");
-        school.ding();
-    }
 }
