@@ -1,17 +1,12 @@
-package com.example.springboot;
+package com.example.springboot.test;
 
 import com.example.autoconfig.bean.ISchool;
 import com.example.autoconfig.config.SchoolConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.PropertySource;
-
-import javax.sql.DataSource;
 
 /**
  * <p><b>Description:</b>
