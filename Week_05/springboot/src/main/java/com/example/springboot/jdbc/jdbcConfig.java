@@ -2,7 +2,7 @@ package com.example.springboot.jdbc;
 
 /**
  * <p><b>Description:</b>
- * TODO
+ * 自定义Connection Bean
  * <p><b>Company:</b>
  *
  * @author created by Jesse Hsu at 17:46 on 2020/11/17
@@ -10,6 +10,7 @@ package com.example.springboot.jdbc;
  * @classNmae jdbcConfig
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,12 +19,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+@Slf4j
 @Configuration
 public class jdbcConfig {
 
     @Bean
-    public Connection dataSource() {
+    public Connection connection() {
         // 数据库驱动类名的字符串
         String driver = "com.mysql.cj.jdbc.Driver";
         // 数据库连接串
@@ -34,20 +35,19 @@ public class jdbcConfig {
         String password = "Jesse@123456";
 
         ResultSet rs = null;
+        Connection conn = null;
         try {
             // 1、加载数据库驱动（ 成功加载后，会将Driver类的实例注册到DriverManager类中）
             Class.forName(driver);
 
-
             // 2、获取数据库连接
-            Connection conn = DriverManager.getConnection(url, username, password);
+             conn = DriverManager.getConnection(url, username, password);
+             log.info("create jdbc connection successful!");
 
-            return conn;
             // 3、获取数据库操作对象
         } catch (Exception e) {
-
+            log.error("create jdbc connection failure!\n"+e.getMessage());
         }
-
-return null;
+        return conn;
     }
 }
