@@ -42,8 +42,6 @@ public class SchoolAsmProxy extends ClassVisitor {
       ProxyClassLoader classLoader =  new ProxyClassLoader();
 
       Class<?> clazz = classLoader.loadClass("com.example.aop.School");
-
-
       Method method = clazz.getDeclaredMethod("dang");
       method.setAccessible(true);
       method.invoke( clazz.newInstance());
