@@ -5,6 +5,7 @@ import com.example.springboot.entity.User;
 import com.example.springboot.service.IUserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.sql.SQLException;
@@ -21,7 +22,8 @@ import java.util.List;
  * @classNmae JdbcApplication
  */
 
-@SpringBootApplication(scanBasePackageClasses =JdbcApplication.class )
+@SpringBootApplication(scanBasePackageClasses =JdbcApplication.class,
+        exclude = DataSourceAutoConfiguration.class )   //关闭DataSource自动装配
 public class JdbcApplication {
 
     public static void main(String[] args) throws SQLException {
@@ -36,6 +38,7 @@ public class JdbcApplication {
         ConfigurableApplicationContext context = SpringApplication.run(JdbcApplication.class);
         IUserService service = context.getBean(IUserService.class);
        System.out.println(service.select(1));
+        System.out.println(service.select(2));
 //        service.insert(new User(2,"Jesse1","Xu"));
 //        service.update(new User(2,"Jesse122","Xu"));
 //        service.delete(2);

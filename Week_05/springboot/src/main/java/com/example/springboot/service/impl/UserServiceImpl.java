@@ -23,9 +23,10 @@ import java.util.List;
 @Slf4j
 @Service
 public class UserServiceImpl implements IUserService {
-    @Autowired
-    private DataSource dataSource;
+//    @Autowired
+//    private DataSource dataSource;
 
+    @Autowired
     private Connection connection;
 
     final String INSERT_SQL = "INSERT INTO user (id,first_name,last_name) VALUES(?,?,?)";
@@ -36,10 +37,10 @@ public class UserServiceImpl implements IUserService {
 
     final   String QUERY_SQL = "SELECT id,first_name as firstName,last_name as lastName from user where id=?";
 
-    @PostConstruct
-    void init() throws SQLException {
-        connection = dataSource.getConnection();
-    }
+//    @PostConstruct
+//    void init() throws SQLException {
+//        connection = dataSource.getConnection();
+//    }
 
     public void insert(User user) {
         log.info("insert user ={}",user);
