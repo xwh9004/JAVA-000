@@ -25,7 +25,7 @@ public class SchoolAsmProxy extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         System.out.println("visitMethod "+name);
-        if("dang".equals(name))  //此处的dang()即为需要修改的方法 ，修改方法內容
+        if("ding".equals(name))  //此处的dang()即为需要修改的方法 ，修改方法內容
         {
 
             MethodVisitor mv = cv.visitMethod(access, name, descriptor, signature, exceptions);//先得到原始的方法

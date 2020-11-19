@@ -25,7 +25,6 @@ public class ProxyClassLoader extends ClassLoader {
                 return super.loadClass(name);
             try {
                 ClassWriter cw = new ClassWriter(0);
-                //
                 InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("com/example/aop/School.class");
                 ClassReader reader = new ClassReader(is);
                 reader.accept(new SchoolAsmProxy(cw), ClassReader.SKIP_DEBUG);
