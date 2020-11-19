@@ -36,6 +36,8 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.1</version>
                 <configuration>
+                    <finalName>school-agent</finalName>
+                    <outputDirectory>E:\gitRepo\JAVA-000\Week_05\aop\src\</outputDirectory>
                     <archive>
                         <manifestEntries>
                             <Premain-Class>com.example.aop.instrument.InstrumentApplication</Premain-Class>
