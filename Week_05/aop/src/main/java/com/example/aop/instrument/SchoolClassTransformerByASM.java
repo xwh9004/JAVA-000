@@ -25,7 +25,9 @@ import java.security.ProtectionDomain;
  * @version V0.1
  * @classNmae SchoolClassTransformer
  */
-public class SchoolClassTransformer implements ClassFileTransformer {
+public class SchoolClassTransformerByASM implements ClassFileTransformer {
+
+    private String targetClassName = "com/example/aop/School";
 
     @Override
     public byte[] transform(ClassLoader loader, String className,
@@ -33,18 +35,23 @@ public class SchoolClassTransformer implements ClassFileTransformer {
                             byte[] classfileBuffer) throws IllegalClassFormatException {
 
         System.out.println(className+" loaded!");
-        if(!className.startsWith("com/example/aop/School")){
+        if(!className.equals(targetClassName)){
             return null;
         }
-        //返回School代理
-        byte[] bytes= new ByteBuddy()
-                .subclass(School.class).name("com.example.aop.SchoolClient")
-                .method(ElementMatchers.named("ding"))
-                .intercept(MethodDelegation.to(SchoolProxy.class))
-                .make().getBytes();
-        System.out.println("classBeingRedefined"+classBeingRedefined);
-        System.out.println(className+" changed!"  );
-        return bytes;
+        try {
+            ClassWriter cw = new ClassWriter(0);
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(targetClassName+".class");
+            ClassReader reader = new ClassReader(is);
+            reader.accept(new SchoolAsmProxy(cw), ClassReader.SKIP_DEBUG);
+
+            byte[] bytes = cw.toByteArray();
+            System.out.println("classBeingRedefined" + classBeingRedefined);
+            System.out.println(className + " changed!");
+            return bytes;
+        }catch(Exception e){
+            e.printStackTrace();
+         }
+        return null;
 
     }
 
