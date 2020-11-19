@@ -17,7 +17,7 @@ import java.lang.instrument.Instrumentation;
 public class InstrumentSchoolProxy  {
 
     public static void main(String[] args) throws Exception {
-
+        System.out.println("main run in " +Thread.currentThread().getName());
         ISchool school = new School();
         school.ding();
     }

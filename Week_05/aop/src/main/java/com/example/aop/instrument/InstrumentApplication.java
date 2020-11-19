@@ -27,32 +27,18 @@ import java.lang.instrument.UnmodifiableClassException;
 public class InstrumentApplication {
 
     public static void premain(String agentArgs, Instrumentation inst) throws UnmodifiableClassException, ClassNotFoundException {
+        System.out.println("premain run in "+Thread.currentThread().getName());
         System.out.println("JVM load premain");
-//        inst.addTransformer(new SchoolClassTransformer());
-        redefineClass(inst);
+//        inst.addTransformer(new SchoolClassTransformerByASM());
+        redefineClass(inst,new SchoolClassTransformerByByteBuddy());
         System.out.println("JVM added School proxy!");
     }
 
-    private static void redefineClass(Instrumentation inst){
-        AgentBuilder.Transformer transformer = new AgentBuilder.Transformer(){
-
-            @Override
-            public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
-                                                    TypeDescription typeDescription,
-                                                    ClassLoader classLoader,
-                                                    JavaModule module) {
-
-                return builder
-                        .method(ElementMatchers.named("ding")) // 拦截任意方法
-                        .intercept(MethodDelegation.to(SchoolProxy.class)); // 委托
-
-            }
-        };
-
+    private static void redefineClass(Instrumentation inst,AgentBuilder.Transformer transformer){
 
         new AgentBuilder
                 .Default()
-                .type(ElementMatchers.nameStartsWith("com.example.aop.School")) // 指定需要拦截的类
+                .type(ElementMatchers.named("com.example.aop.School")) // 指定需要拦截的类
                 .transform(transformer)
                 .installOn(inst);
 
