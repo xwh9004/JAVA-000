@@ -17,7 +17,8 @@ import java.lang.instrument.UnmodifiableClassException;
 
 /**
  * <p><b>Description:</b>
- * TODO
+ * jvm arguments
+ * -Dfile.encoding=UTF-8 -javaagent:E:\gitRepo\JAVA-000\Week_05\aop\src\school-agent.jar
  * <p><b>Company:</b>
  *
  * @author created by Jesse Hsu at 14:20 on 2020/11/18
