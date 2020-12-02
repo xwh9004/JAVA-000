@@ -1,19 +1,19 @@
 package com.example.order.service.impl;
 
 import com.example.order.annotatiion.DataSourceTarget;
-import com.example.order.db.DynamicRoutingDataSource;
 import com.example.order.entity.Order;
 import com.example.order.service.OrderService;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.driver.jdbc.core.datasource.ShardingSphereDataSource;
+import org.apache.shardingsphere.driver.jdbc.core.resultset.ShardingSphereResultSet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,11 +37,12 @@ import static com.example.order.sql.SqlStatements.SELECT_SQL;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private DynamicRoutingDataSource dynamicDataSource;
+//    @Autowired
+//    private DynamicRoutingDataSource dynamicDataSource;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
 //    @Qualifier("primaryJdbcTemplate")
 //    @Autowired
@@ -81,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 //                return prepareStatement;
 //            }
 //        });
-        jdbcTemplate.setDataSource(dynamicDataSource.getDataSource());
+//        jdbcTemplate.setDataSource(dynamicDataSource.getDataSource());
         log.info("从数据库写入数据 url:"+((HikariDataSource)jdbcTemplate.getDataSource()).getJdbcUrl());
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -130,10 +131,12 @@ public class OrderServiceImpl implements OrderService {
 //                }
 //            }
 //        });
-        jdbcTemplate.setDataSource(dynamicDataSource.getDataSource());
+//        jdbcTemplate.setDataSource(dynamicDataSource.getDataSource());
 
-        log.info("从数据库查询数据 url:"+((HikariDataSource)jdbcTemplate.getDataSource()).getJdbcUrl());
+//        log.info("从数据库查询数据 url:"+((HikariDataSource)jdbcTemplate.getDataSource()).getJdbcUrl());
 
+
+        log.info("从数据库查询数据 url:"+((ShardingSphereDataSource)jdbcTemplate.getDataSource()).toString());
         jdbcTemplate.query(new PreparedStatementCreator() {
 
             @Override
@@ -146,8 +149,12 @@ public class OrderServiceImpl implements OrderService {
             }
         }, new RowCallbackHandler() {
             @Override
-            public void processRow(ResultSet resultSet) throws SQLException {
-                if(resultSet.first()){
+            public void processRow(ResultSet resultSet0) throws SQLException {
+                ResultSet resultSet = resultSet0;
+                if(resultSet0 instanceof  ShardingSphereResultSet ){
+                    ShardingSphereResultSet shardingResult = (ShardingSphereResultSet)resultSet0;
+                    resultSet = shardingResult.getResultSets().get(0);
+                }
                     order.setId(resultSet.getInt("order_id"));
                     order.setNo(resultSet.getString("order_no"));
                     order.setProductAmount(resultSet.getInt("product_amount"));
@@ -157,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
                     order.setProductUnitPrice(resultSet.getDouble("product_unit_price"));
                     order.setCreateTime(resultSet.getLong("create_time"));
                     order.setUpdateTime(resultSet.getLong("update_time"));
-                }
+
             }
         });
         return order;

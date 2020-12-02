@@ -1,22 +1,14 @@
 package com.example.order.aspect;
 
 import com.example.order.annotatiion.DataSourceTarget;
-import com.example.order.db.DynamicRoutingDataSource;
-import org.aspectj.lang.JoinPoint;
+import com.example.order.config.DynamicRoutingDataSource;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
@@ -34,8 +26,8 @@ import java.util.stream.Stream;
  * @version V0.1
  * @classNmae OrderServiceAspect
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class DataSourceRouter implements ApplicationContextAware {
 
     private ApplicationContext context;

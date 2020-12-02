@@ -18,7 +18,9 @@ public class OrderServiceApplication {
 
         OrderService orderService = application.getBean(OrderService.class);
 
-        System.out.println(orderService.query(2));
+        for(int i=0;i<5;i++){
+            System.out.println(orderService.query(2));
+        }
 //        Order order =new Order();
 //        order.setUserId(3);
 //        order.setProductId(1);
@@ -26,9 +28,7 @@ public class OrderServiceApplication {
 //        order.setProductUnitPrice(88.90);
 //        order.setOrderTotalPrice(88.90*order.getProductAmount());
 //        orderService.save(order);
-//        System.out.println(orderService.query(2));
-
-        application.close();
+        application.stop();
 
     }
 }
