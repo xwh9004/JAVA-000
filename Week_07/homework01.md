@@ -84,6 +84,8 @@ public void test_insert_million_order() throws SQLException {
 
 
 
+
+
 方法二  使用myql source 命令导入 1000，000条数据
 
 将1000，000数据写入文件，导入数据库
@@ -95,4 +97,26 @@ public void test_insert_million_order() throws SQLException {
 执行时间平均每次 6-8秒 总共耗时 8*15 = 120s,
 
 相比程序跑批插入快非常多。
+
+
+
+方法三： 使用方法一的代码，msyql链接添加 rewriteBatchedStatements=true参数
+
+结果：
+
+```
+第 1次耗时：13025
+第 2次耗时：14953
+第 3次耗时：14647
+第 4次耗时：14800
+第 5次耗时：18500
+第 6次耗时：16604
+第 7次耗时：16727
+第 8次耗时：19721
+第 9次耗时：18209
+第 10次耗时：22862
+总次耗时：170048
+```
+
+
 
