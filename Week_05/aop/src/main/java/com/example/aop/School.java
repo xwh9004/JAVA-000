@@ -11,7 +11,8 @@ public class School implements ISchool {
         System.out.println("dingding.... !");
     }
 
-    static void dang(){
+    public static String dang(String sss,String hh){
         System.out.println("dangdang.... !");
+        return sss.concat(hh);
     }
 }
