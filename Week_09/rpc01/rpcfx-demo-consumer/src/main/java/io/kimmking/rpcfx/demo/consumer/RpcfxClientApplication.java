@@ -15,7 +15,7 @@ public class RpcfxClientApplication {
 	// nexus, userserivce -> userdao -> user
 	//
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		// UserService service = new xxx();
 		// service.findById

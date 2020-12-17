@@ -5,6 +5,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.asm.Advice;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.This;
+import net.bytebuddy.matcher.ElementMatchers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 
 public final class Rpcfx {
 
@@ -21,11 +30,24 @@ public final class Rpcfx {
         ParserConfig.getGlobalInstance().addAccept("io.kimmking");
     }
 
-    public static <T> T create(final Class<T> serviceClass, final String url) {
+    public static <T> T create(final Class<T> serviceClass, final String url) throws Exception {
 
         // 0. 替换动态代理 -> AOP
-        return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(), new Class[]{serviceClass}, new RpcfxInvocationHandler(serviceClass, url));
+//        return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(), new Class[]{serviceClass}, new RpcfxInvocationHandler(serviceClass, url));
 
+        
+        T proxy = new ByteBuddy()
+                .subclass(serviceClass)
+                .method(ElementMatchers.anyOf(serviceClass.getMethods()))
+                .intercept(InvocationHandlerAdapter.of(new RpcfxInvocationHandler(serviceClass,url)))
+                .make()
+                .load(Thread.currentThread().getContextClassLoader())
+                .getLoaded()
+                .getDeclaredConstructor().newInstance();
+
+
+
+        return proxy;
     }
 
     public static class RpcfxInvocationHandler implements InvocationHandler {
