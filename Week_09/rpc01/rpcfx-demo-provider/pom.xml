@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>rpcfx</artifactId>
-        <groupId>io.kimmking</groupId>
+        <groupId>com.example</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -18,12 +18,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.kimmking</groupId>
+            <groupId>com.example</groupId>
             <artifactId>rpcfx-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.kimmking</groupId>
+            <groupId>com.example</groupId>
             <artifactId>rpcfx-demo-api</artifactId>
             <version>${project.version}</version>
         </dependency>
