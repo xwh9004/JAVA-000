@@ -28,7 +28,7 @@ public class RpcNettyClient implements Client {
 
     private  Map<String, ChannelFuture> channelMap = new ConcurrentHashMap<String,ChannelFuture>();
 
-    private NettyClientOutboundHandler outboundHandler = new NettyClientOutboundHandler();
+    private NettyClientInboundHandler outboundHandler = new NettyClientInboundHandler();
 
     private ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -42,15 +42,16 @@ public class RpcNettyClient implements Client {
     public RpcfxResponse invoke(RpcfxRequest req, String url) throws IOException {
         String reqJson = JSON.toJSONString(req);
         System.out.println("req json: "+reqJson);
-        FullHttpRequest fullRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1,HttpMethod.POST,url, Unpooled.wrappedBuffer(reqJson.getBytes()));
-        fullRequest.headers().set("accept-type", Charsets.UTF_8);
-        fullRequest.headers().set(HttpHeaders.Names.HOST, "127.0.0.1");
-        fullRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-        fullRequest.headers().set(HttpHeaders.Names.CONTENT_LENGTH, fullRequest.content().readableBytes());
-        fullRequest.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
         URI uri = URI.create(url);
         String host = uri.getHost();
         int port =  uri.getPort();
+        FullHttpRequest fullRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1,HttpMethod.POST,url, Unpooled.wrappedBuffer(reqJson.getBytes()));
+        fullRequest.headers().set("accept-type", Charsets.UTF_8);
+        fullRequest.headers().set(HttpHeaderNames.HOST, host);
+        fullRequest.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        fullRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, fullRequest.content().readableBytes());
+        fullRequest.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+
         Future<String> futureTask = executorService.submit(() -> {
             try {
                 ChannelFuture channelFuture = connect(host, port);
@@ -102,7 +103,7 @@ public class RpcNettyClient implements Client {
         try {
             f.channel().closeFuture().sync();
         }finally {
-            workerGroup.shutdownGracefully().sync();
+//            workerGroup.shutdownGracefully().sync();
             log.info("NettyHttpClient shutdownGracefully");
         }
     }

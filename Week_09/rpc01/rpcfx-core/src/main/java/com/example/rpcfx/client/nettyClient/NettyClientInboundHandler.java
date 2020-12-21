@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 @Slf4j
 @ChannelHandler.Sharable
-public class NettyClientOutboundHandler extends ChannelInboundHandlerAdapter {
+public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     private String res = null;
 
     @Override
