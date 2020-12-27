@@ -11,12 +11,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
+import io.netty.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.Charsets;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -28,11 +31,12 @@ public class RpcNettyClient implements Client {
 
     private  Map<String, ChannelFuture> channelMap = new ConcurrentHashMap<String,ChannelFuture>();
 
+    private Map<String, ResultFuture> respMap = new HashMap<>();
     private NettyClientInboundHandler outboundHandler = new NettyClientInboundHandler();
 
     private ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-    private  String respJson;
+
 
     public RpcNettyClient(){
         init();
@@ -40,6 +44,7 @@ public class RpcNettyClient implements Client {
 
     @Override
     public RpcfxResponse invoke(RpcfxRequest req, String url) throws IOException {
+        req.setMsgId(UUID.randomUUID().toString());
         String reqJson = JSON.toJSONString(req);
         System.out.println("req json: "+reqJson);
         URI uri = URI.create(url);
@@ -51,8 +56,8 @@ public class RpcNettyClient implements Client {
         fullRequest.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         fullRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, fullRequest.content().readableBytes());
         fullRequest.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
-
-        Future<String> futureTask = executorService.submit(() -> {
+        respMap.put(req.getMsgId(),new ResultFuture());
+        executorService.submit(() -> {
             try {
                 ChannelFuture channelFuture = connect(host, port);
                 channelFuture.channel().writeAndFlush(fullRequest).addListener(new ChannelFutureListener() {
@@ -65,20 +70,20 @@ public class RpcNettyClient implements Client {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return outboundHandler.getRes();
         });
+        RpcfxResponse response = null;
         try {
-            respJson = futureTask.get();
+             response =  respMap.get(req.getMsgId()).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        System.out.println("resp json: "+respJson);
-        return JSON.parseObject(respJson, RpcfxResponse.class);
+        return response;
     }
 
     public void init() {
+        outboundHandler.setRespMap(respMap);
         workerGroup = new NioEventLoopGroup();
         b = new Bootstrap();
         b.group(workerGroup);
@@ -103,7 +108,7 @@ public class RpcNettyClient implements Client {
         try {
             f.channel().closeFuture().sync();
         }finally {
-//            workerGroup.shutdownGracefully().sync();
+            workerGroup.shutdownGracefully().sync();
             log.info("NettyHttpClient shutdownGracefully");
         }
     }

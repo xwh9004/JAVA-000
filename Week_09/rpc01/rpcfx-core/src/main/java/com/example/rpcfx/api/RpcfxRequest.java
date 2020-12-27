@@ -2,11 +2,21 @@ package com.example.rpcfx.api;
 
 public class RpcfxRequest {
 
+    private String msgId;
+
   private String serviceClass;
 
   private String method;
 
   private Object[] params;
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
+
+    public String getMsgId() {
+        return msgId;
+    }
 
     public String getServiceClass() {
         return serviceClass;
