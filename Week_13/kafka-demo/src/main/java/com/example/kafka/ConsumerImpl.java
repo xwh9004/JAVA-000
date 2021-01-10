@@ -9,7 +9,7 @@ import java.util.*;
 
 public class ConsumerImpl implements Consumer {
     private Properties properties;
-    private KafkaConsumer<String, String> consumer;
+    private KafkaConsumer<String,String> consumer;
     private final String topic = "quickstart-events";
     private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     private Set<String> orderSet = new HashSet<>();
@@ -21,7 +21,8 @@ public class ConsumerImpl implements Consumer {
 //        properties.put("isolation.level", "read_committed");
 //        properties.put("auto.offset.reset", "latest");
         properties.put("group.id", "java1-kimmking");
-        properties.put("bootstrap.servers", "localhost:9092");
+//        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put("bootstrap.servers", "localhost:9002");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         consumer = new KafkaConsumer(properties);

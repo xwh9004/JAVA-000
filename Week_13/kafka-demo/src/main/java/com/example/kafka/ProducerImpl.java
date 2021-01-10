@@ -12,7 +12,8 @@ public class ProducerImpl implements Producer {
     private final String topic = "quickstart-events";
     public ProducerImpl() {
         properties = new Properties();
-        properties.put("bootstrap.servers", "localhost:9092");
+//        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put("bootstrap.servers", "localhost:9001");
 //        properties.put("queue.enqueue.timeout.ms", -1);
 //        properties.put("enable.idempotence", true);
 //        properties.put("transactional.id", "transactional_1");
@@ -31,6 +32,7 @@ public class ProducerImpl implements Producer {
             //producer.beginTransaction();
             ProducerRecord record = new ProducerRecord(topic, order.getId().toString(), JSON.toJSONString(order));
             producer.send(record, (metadata, exception) -> {
+                System.out.println("发送成功");
 //                if (exception != null) {
 //                    producer.abortTransaction();
 //                    throw new KafkaException(exception.getMessage() + " , data: " + record);
@@ -39,6 +41,8 @@ public class ProducerImpl implements Producer {
             //producer.commitTransaction();
 
         } catch (Throwable e) {
+            System.out.println("发送出错了");
+            System.out.println(e);
             //producer.abortTransaction();
         }
         //System.out.println("************" + json + "************");
