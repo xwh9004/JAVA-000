@@ -32,7 +32,7 @@ public class RpcNettyClient implements Client {
     private  Map<String, ChannelFuture> channelMap = new ConcurrentHashMap<String,ChannelFuture>();
 
     private Map<String, ResultFuture> respMap = new HashMap<>();
-    private NettyClientInboundHandler outboundHandler = new NettyClientInboundHandler();
+    private NettyClientInboundHandler inboundHandler = new NettyClientInboundHandler();
 
     private ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -83,7 +83,7 @@ public class RpcNettyClient implements Client {
     }
 
     public void init() {
-        outboundHandler.setRespMap(respMap);
+        inboundHandler.setRespMap(respMap);
         workerGroup = new NioEventLoopGroup();
         b = new Bootstrap();
         b.group(workerGroup);
@@ -97,7 +97,7 @@ public class RpcNettyClient implements Client {
                         .addLast(new HttpRequestEncoder()) // 客户端发送的是httpRequest，所以要使用HttpRequestEncoder进行编码
                         .addLast(new HttpObjectAggregator(1024 * 10 * 1024));
 
-                ch.pipeline().addLast(outboundHandler);
+                ch.pipeline().addLast(inboundHandler);
 
             }
         });

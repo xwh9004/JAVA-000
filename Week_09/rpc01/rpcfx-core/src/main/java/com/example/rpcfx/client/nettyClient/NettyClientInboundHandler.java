@@ -44,7 +44,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//        ctx.channel().close();
+        ctx.close();
     }
 
 }
