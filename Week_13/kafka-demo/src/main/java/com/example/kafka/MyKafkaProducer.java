@@ -20,7 +20,7 @@ public class MyKafkaProducer implements Producer{
         this.kafkaTemplate = kafkaTemplate;
     }
 
-//    @KafkaListener(topics =topic)
+
     public void send(Order order) {
         ProducerRecord record = new ProducerRecord(topic, order.getId().toString(), JSON.toJSONString(order));
         kafkaTemplate.send(record);

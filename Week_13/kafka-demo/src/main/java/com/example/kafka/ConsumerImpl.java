@@ -31,7 +31,7 @@ public class ConsumerImpl implements Consumer {
     @Override
     public void consumeOrder() {
 
-        consumer.subscribe(Collections.singletonList(topic));
+        consumer.subscribe(Collections.singletonList(topic),new HandleRebalance(consumer,currentOffsets));
 
         try {
             while (true) { //拉取数据
@@ -41,17 +41,17 @@ public class ConsumerImpl implements Consumer {
                     ConsumerRecord<String, String> record = (ConsumerRecord) o;
                     Order order = JSON.parseObject(record.value(), Order.class);
                     System.out.println(" order = " + order);
-//                    deduplicationOrder(order);
-//                    currentOffsets.put(new TopicPartition(record.topic(), record.partition()),
-//                            new OffsetAndMetadata(record.offset() + 1, "no matadata"));
-//                    consumer.commitAsync(currentOffsets, new OffsetCommitCallback() {
-//                        @Override
-//                        public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
-//                            if (exception != null) {
-//                                exception.printStackTrace();
-//                            }
-//                        }
-//                    });
+                    deduplicationOrder(order);
+                    currentOffsets.put(new TopicPartition(record.topic(), record.partition()),
+                            new OffsetAndMetadata(record.offset() + 1, "no matadata"));
+                    consumer.commitAsync(currentOffsets, new OffsetCommitCallback() {
+                        @Override
+                        public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+                            if (exception != null) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
                 }
             }
         } catch (CommitFailedException e) {

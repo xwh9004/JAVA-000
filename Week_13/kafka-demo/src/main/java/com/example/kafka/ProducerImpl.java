@@ -3,6 +3,7 @@ package com.example.kafka;
 import com.alibaba.fastjson.JSON;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.kafka.KafkaException;
 
 import java.util.Properties;
 
@@ -31,12 +32,13 @@ public class ProducerImpl implements Producer {
         try {
             //producer.beginTransaction();
             ProducerRecord record = new ProducerRecord(topic, order.getId().toString(), JSON.toJSONString(order));
+
             producer.send(record, (metadata, exception) -> {
                 System.out.println("发送成功");
-//                if (exception != null) {
-//                    producer.abortTransaction();
-//                    throw new KafkaException(exception.getMessage() + " , data: " + record);
-//                }
+                if (exception != null) {
+                    producer.abortTransaction();
+                    throw new KafkaException(exception.getMessage() + " , data: " + record);
+                }
             });
             //producer.commitTransaction();
 
