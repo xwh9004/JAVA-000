@@ -4,7 +4,31 @@
 
 **kafka关闭**
 
- *.\kafka-server-stop.bat*
+ 
+
+```
+.\kafka-server-stop.bat
+```
+
+查看topic
+
+```
+ .\kafka-topics.bat --zookeeper localhost:2181 --list
+```
+
+创建topic
+
+```
+ .\kafka-topics.bat --zookeeper localhost:2181 --create --topic testk --partitions 4 --replication-factor 1
+```
+
+生产者发送消息
+
+```
+ .\kafka-console-producer.bat --bootstrap-server localhost:9092 --topic testk
+```
+
+消费者消费消息
 
  **简单性能测**  
 
@@ -40,7 +64,7 @@
 1个线程：
 
 ```
-.\ kafka-consumer-perf-test.sh ---bootstrap-server localhost:9092 --topic press-test --fetch-size 1048576 --*messages 100000 --threads 1
+.\kafka-consumer-perf-test.sh --bootstrap-server localhost:9092 --topic press-test --fetch-size 1048576 --messages 100000 --threads 1
 ```
 
 结果：
