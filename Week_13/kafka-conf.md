@@ -30,6 +30,10 @@
 
 消费者消费消息
 
+```
+.\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic testk
+```
+
  **简单性能测**  
 
 环境 window10 8g ssd
